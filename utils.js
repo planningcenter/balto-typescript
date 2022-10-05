@@ -24,9 +24,9 @@ exports.easyExec = async function easyExec (commandWithArgs) {
   console.log(`${command} ${args.join(' ')}`)
   const exitCode = await exec.exec(command, args, options)
 
-  if (exitCode !== 0) {
-    throw new Error(`"${command}" returned an exit code of ${exitCode}`)
-  }
+  // if (exitCode !== 0) {
+  //   throw new Error(`"${command}" returned an exit code of ${exitCode}`)
+  // }
 
   return {
     output,

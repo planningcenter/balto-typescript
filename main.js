@@ -79,8 +79,15 @@ async function setupTypescriptCommand () {
 async function runTypeScriptCommand () {
   const results = await easyExec(typeScriptCommand)
   const conclusion = results.error ? INPUT_CONCLUSIONLEVEL : 'success'
-
-  return { conclusion, output: results.output }
+  const errors = results.output.split("\n")
+  return {
+    conclusion,
+    output: {
+      title: checkName,
+      summary: `${errors.length} errors found.`,
+      annotations: []
+    }
+  }
 }
 
 async function run () {

@@ -15,7 +15,7 @@ module.exports = class CheckRun {
       owner: this.event.repository.owner.login,
       repo: this.event.repository.name,
       name: this.name,
-      head_sha: this.event.head_commit?.id || this.event.pull_request.head.sha,
+      head_sha: this.event.head_commit && this.event.head_commit.id  || this.event.pull_request.head.sha,
       status: 'in_progress',
       started_at: new Date()
     })

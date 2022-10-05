@@ -79,15 +79,30 @@ async function setupTypescriptCommand () {
 async function runTypeScriptCommand () {
   const results = await easyExec(typeScriptCommand, false)
   const conclusion = results.exitCode > 0 ? INPUT_CONCLUSIONLEVEL : 'success'
-  const errors = results.output.split("\n")
-  console.log({ exitCode: results.exitCode })
-  console.log(JSON.stringify(errors))
+
+  const annotations = results.output.split("\n")
+                                    .map((line) => {
+                                      const foo = line.match(/(.*\.ts?x)\((.*)\,.*(error.*)/)
+                                      if (!foo) return
+
+                                      const lineNumber = parseInt(foo[2], 10)
+                                      if (!lineNumber) console.log(line, foo)
+                                      return {
+                                        path: foo[1],
+                                        start_line: lineNumber,
+                                        end_line: lineNumber,
+                                        annotation_level: 'failure',
+                                        message: foo[3]
+                                      }
+                                    })
+                                    .filter(n => n)
+
   return {
     conclusion,
     output: {
       title: checkName,
-      summary: `${errors.filter(e => e.match(/error\sTS\d\d\d\d/)).length} errors found.`,
-      annotations: []
+      summary: `${annotations.length} errors found.`,
+      annotations: annotations.slice(0, 50)
     }
   }
 }

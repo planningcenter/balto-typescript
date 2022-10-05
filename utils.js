@@ -12,7 +12,7 @@ exports.easyExec = async function easyExec (commandWithArgs) {
       },
       stderr: data => {
         error += data.toString()
-      }
+      },
     },
     silent: true
   }
@@ -22,9 +22,12 @@ exports.easyExec = async function easyExec (commandWithArgs) {
   const args = commandParts.slice(1)
 
   console.log(`${command} ${args.join(' ')}`)
-  const exitCode = await exec.exec(command, args, options)
-  console.log('exit code:', exitCode)
-  console.log('output:', output)
+  let exitCode
+  try {
+    exitCode = await exec.exec(command, args, options)
+  } catch(e) {
+    return { output, error, exitCode: 2 }
+  }
 
   if (exitCode !== 0) {
     throw new Error(`"${command}" returned an exit code of ${exitCode}`)

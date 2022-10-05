@@ -77,14 +77,16 @@ async function setupTypescriptCommand () {
 }
 
 async function runTypeScriptCommand () {
-  const results = await easyExec(typeScriptCommand)
-  const conclusion = results.errorCode > 0 ? INPUT_CONCLUSIONLEVEL : 'success'
+  const results = await easyExec(typeScriptCommand, false)
+  const conclusion = results.exitCode > 0 ? INPUT_CONCLUSIONLEVEL : 'success'
   const errors = results.output.split("\n")
+  console.log({ exitCode: results.exitCode })
+  console.log(JSON.stringify(errors))
   return {
     conclusion,
     output: {
       title: checkName,
-      summary: `${errors.length} errors found.`,
+      summary: `${errors.filter(e => e.match(/error\sTS\d\d\d\d/)).length} errors found.`,
       annotations: []
     }
   }

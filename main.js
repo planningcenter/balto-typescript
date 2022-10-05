@@ -81,27 +81,29 @@ async function runTypeScriptCommand () {
   const conclusion = results.exitCode > 0 ? INPUT_CONCLUSIONLEVEL : 'success'
 
   const annotations = results.output.split("\n")
-                                    .map((line) => {
-                                      const foo = line.match(/(.*\.ts?x)\((.*)\,.*(error.*)/)
-                                      if (!foo) return
+                                    .reduce((acc, line) => {
+                                      const foo = line.match(/(.*\.tsx?)\((.*)\,.*(error.*)/)
+                                      if (!foo) {
+                                        const lastAnnotation = acc[acc.length - 1]
+                                        lastAnnotation.message += `\n${line}`
+                                        return acc
+                                      }
 
                                       const lineNumber = parseInt(foo[2], 10)
-                                      if (!lineNumber) console.log(line, foo)
-                                      return {
+                                      return [...acc, {
                                         path: foo[1],
                                         start_line: lineNumber,
                                         end_line: lineNumber,
                                         annotation_level: 'failure',
                                         message: foo[3]
-                                      }
-                                    })
-                                    .filter(n => n)
+                                      }]
+                                    }, [])
 
   return {
     conclusion,
     output: {
       title: checkName,
-      summary: `${annotations.length} errors found.`,
+      summary: `${annotations.length} errors found. ${annotations.length > 50 ? "(only 50 shown in annotations)" : ""}`,
       annotations: annotations.slice(0, 50)
     }
   }

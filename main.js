@@ -11,59 +11,9 @@ const event = require(process.env.GITHUB_EVENT_PATH)
 const checkName = 'TypeScript'
 
 let typeScriptCommand = null
-let yarnOutput = null
-
-async function getYarn () {
-  if (yarnOutput) return yarnOutput
-
-  const { output } = await easyExec('yarn list --depth=0 --json')
-
-  yarnOutput = JSON.parse(output)
-  return yarnOutput
-}
-
-async function getPeerDependencies (error) {
-  const peers = error
-    .split('\n')
-    .map(l => l.match(/ requires a peer of (?<packageName>.+)@/))
-    .filter(m => m)
-    .map(m => m.groups.packageName)
-
-  const versions = []
-
-  for (var peersIndex = 0; peersIndex < peers.length; peersIndex++) {
-    const peer = peers[peersIndex]
-
-    const yarn = await getYarn()
-
-    yarn.data.trees
-      .filter(p => p.name.startsWith(`${peer}@`))
-      .forEach(p => versions.push(p.name))
-  }
-
-  return versions
-}
 
 async function installJSPackagesAsync () {
-  const yarn = await getYarn()
-
-  const versions = yarn.data.trees
-    .filter(p => p.name.match(/@types/) || p.name.match(/typescript/) || p.name.match(/tsc-silent/))
-    .map(p => p.name)
-
-  await io.mv('package.json', 'package.json-bak')
-
-  try {
-    const { error } = await easyExec(
-      ['npm i', ...versions, '--no-package-lock'].join(' ')
-    )
-    const peerVersions = await getPeerDependencies(error)
-    if (peerVersions.length > 0) {
-      await easyExec(['npm i', ...peerVersions, '--no-package-lock'].join(' '))
-    }
-  } finally {
-    await io.mv('package.json-bak', 'package.json')
-  }
+  // await easyExec('yarn --prefer-offline', false)
 }
 
 async function setupTypescriptCommand () {
@@ -77,20 +27,31 @@ async function setupTypescriptCommand () {
 
 async function runTypeScriptCommand () {
   const results = await easyExec(typeScriptCommand)
-  const conclusion = results.exitCode > 0 ? INPUT_CONCLUSIONLEVEL : 'success'
+  let currentErrorComplete = true
+  // console.log(results)
   const annotations = results.output.split("\n")
                                     .reduce((acc, line) => {
+                                      if (line === '' || line === "\n") {
+                                        // console.log('skipping line')
+                                        currentErrorComplete = true
+                                        return acc
+                                      }
+
                                       const lineWithoutAsciiColors = line.replace(/\u001b[^m]*?m/g, "")
                                       const foo = lineWithoutAsciiColors.match(/(.*\.tsx?)[\(:](.*)[:,].*(error.*)/)
                                       if (!foo) {
+                                        if (currentErrorComplete) return acc
                                         const lastAnnotation = acc[acc.length - 1]
+                                        // console.log('appending to message', lastAnnotation, lineWithoutAsciiColors)
                                         if (lastAnnotation)  {
                                           lastAnnotation.message += `\n${lineWithoutAsciiColors}`
                                         }
                                         return acc
                                       }
 
+                                      currentErrorComplete = false
                                       const lineNumber = parseInt(foo[2], 10)
+                                      // console.log('adding new error', lineWithoutAsciiColors)
                                       return [...acc, {
                                         path: foo[1],
                                         start_line: lineNumber,
@@ -99,12 +60,13 @@ async function runTypeScriptCommand () {
                                         message: foo[3]
                                       }]
                                     }, [])
+  const conclusion = annotations.length > 0 ? INPUT_CONCLUSIONLEVEL : 'success'
 
   return {
     conclusion,
     output: {
       title: checkName,
-      summary: `${annotations.length} errors found. ${annotations.length > 50 ? "(only 50 shown in annotations)" : ""}`,
+      summary: `${annotations.length} error${annotations.length === 1 ? "" : "s"} found. ${annotations.length > 50 ? "(only 50 shown in annotations)" : ""}`,
       annotations: annotations.slice(0, 50)
     }
   }

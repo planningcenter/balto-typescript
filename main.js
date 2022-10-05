@@ -68,11 +68,10 @@ async function installJSPackagesAsync () {
 
 async function setupTypescriptCommand () {
   try {
-    require(`${GITHUB_WORKSPACE}/node_modules/tsc-silent`)
     require(`${GITHUB_WORKSPACE}/tsc-silent.config.js`)
-    typeScriptCommand = `${GITHUB_WORKSPACE}/node_modules/.bin/tsc-silent -p ${GITHUB_WORKSPACE}/tsconfig.json --suppressConfig ${GITHUB_WORKSPACE}/tsc-silent.config.js`
+    typeScriptCommand = `${GITHUB_WORKSPACE}/node_modules/.bin/tsc-silent -p ${GITHUB_WORKSPACE}/tsconfig.json --suppressConfig ${GITHUB_WORKSPACE}/tsc-silent.config.js --compiler ${GITHUB_WORKSPACE}/node_modules/typescript/lib/typescript.js`
   } catch(e) {
-    typeScriptCommand = `${GITHUB_WORKSPACE}/node_modules/.bin/tsc`
+    typeScriptCommand = `${GITHUB_WORKSPACE}/node_modules/.bin/tsc --pretty`
   }
 }
 
@@ -80,12 +79,13 @@ async function runTypeScriptCommand () {
   const results = await easyExec(typeScriptCommand, false)
   const conclusion = results.exitCode > 0 ? INPUT_CONCLUSIONLEVEL : 'success'
 
+  console.log(results)
   const annotations = results.output.split("\n")
                                     .reduce((acc, line) => {
                                       const foo = line.match(/(.*\.tsx?)\((.*)\,.*(error.*)/)
                                       if (!foo) {
                                         const lastAnnotation = acc[acc.length - 1]
-                                        lastAnnotation.message += `\n${line}`
+                                        if (lastAnnotation) lastAnnotation.message += `\n${line}`
                                         return acc
                                       }
 

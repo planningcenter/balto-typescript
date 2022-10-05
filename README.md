@@ -1,15 +1,14 @@
-# 🐺 Balto
+# 🐺 Balto-TypeScript
 
 Balto is Smart and Fast:
 
-* Installs _your_ versions of eslint and eslint plugins
-* _Only_ runs on files that have changed
-* _Only_ annotates lines that have changed
+* Runs your TypeScript compilation with your settings and versions to make sure that everything compiles correctly
+* Supports ignoring specific errors using [tsc-silent](https://github.com/evolution-gaming/tsc-silent)
 
 Sample config (place in `.github/workflows/balto.yml`):
 
 ```yaml
-name: Balto
+name: Balto-TypeScript
 
 on: [pull_request]
 
@@ -33,11 +32,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - uses: planningcenter/balto-eslint@v0.6
+      - uses: planningcenter/balto-typescript@v0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          extensions: "js,jsx"
 ```
 
 ## Inputs
@@ -46,13 +43,13 @@ jobs:
 |:-:|:-:|:-:|:-:|
 | `conclusionLevel` | Which check run conclusion type to use when annotations are created (`"neutral"` or `"failure"` are most common). See [GitHub Checks documentation](https://developer.github.com/v3/checks/runs/#parameters) for all available options.  | no | `"neutral"` |
 | `failureLevel` | The lowest annotation level to fail on | no | `"error"` |
-| `extensions` | A comma separated list of extensions to run ESLint on | no | `"js"` |
+
 
 ## Outputs
 
 | Name | Description |
 |:-:|:-:|
-| `issuesCount` | Number of ESLint violations found |
+| `issuesCount` | Number of TypeScript errors found |
 
 ## A note about permissions
 

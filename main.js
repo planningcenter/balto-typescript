@@ -76,16 +76,17 @@ async function setupTypescriptCommand () {
 }
 
 async function runTypeScriptCommand () {
-  const results = await easyExec(typeScriptCommand, false)
+  const results = await easyExec(typeScriptCommand)
   const conclusion = results.exitCode > 0 ? INPUT_CONCLUSIONLEVEL : 'success'
-
-  console.log(results)
   const annotations = results.output.split("\n")
                                     .reduce((acc, line) => {
-                                      const foo = line.match(/(.*\.tsx?)\((.*)\,.*(error.*)/)
+                                      const lineWithoutAsciiColors = line.replace(/\u001b[^m]*?m/g, "")
+                                      const foo = lineWithoutAsciiColors.match(/(.*\.tsx?)[\(:](.*)[:,].*(error.*)/)
                                       if (!foo) {
                                         const lastAnnotation = acc[acc.length - 1]
-                                        if (lastAnnotation) lastAnnotation.message += `\n${line}`
+                                        if (lastAnnotation)  {
+                                          lastAnnotation.message += `\n${lineWithoutAsciiColors}`
+                                        }
                                         return acc
                                       }
 

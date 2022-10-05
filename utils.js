@@ -21,6 +21,8 @@ exports.easyExec = async function easyExec (commandWithArgs, silent = true) {
   const command = commandParts[0]
   const args = commandParts.slice(1)
 
+  console.log(commandWithArgs)
+
   let exitCode
   try {
     exitCode = await exec.exec(command, args, options)

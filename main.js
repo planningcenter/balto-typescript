@@ -70,9 +70,9 @@ async function setupTypescriptCommand () {
   try {
     require(`${GITHUB_WORKSPACE}/node_modules/tsc-silent`)
     require(`${GITHUB_WORKSPACE}/tsc-silent.config.js`)
-    typeScriptCommand = `${GITHUB_WORKSPACE}/node_modules/tsc-silent/bin/tsc-silent -p ${GITHUB_WORKSPACE}/tsconfig.json --suppressConfig ${GITHUB_WORKSPACE}/tsc-silent.config.js`
+    typeScriptCommand = `${GITHUB_WORKSPACE}/node_modules/.bin/tsc-silent -p ${GITHUB_WORKSPACE}/tsconfig.json --suppressConfig ${GITHUB_WORKSPACE}/tsc-silent.config.js`
   } catch(e) {
-    typeScriptCommand = `${GITHUB_WORKSPACE}/node_modules/typescript/bin/tsc`
+    typeScriptCommand = `${GITHUB_WORKSPACE}/node_modules/.bin/tsc`
   }
 }
 

@@ -4,7 +4,7 @@ const { GITHUB_TOKEN } = process.env
 
 module.exports = class CheckRun {
   constructor ({ name, event }) {
-    this.octokit = new github.getOctokit(GITHUB_TOKEN)
+    this.octokit = new github.GitHub(GITHUB_TOKEN)
     this.event = event
     this.name = name
     this.id = null

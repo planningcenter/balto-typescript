@@ -7,12 +7,20 @@ runs:
       with:
         fetch-depth: 0
     - uses: actions/setup-node@v2
+      if: ${{ !inputs.cachePackages }}
       with:
-        node-version: '12'
+        node-version: ${{ inputs.nodeVersion }}
+    - uses: actions/setup-node@v2
+      if: ${{ inputs.cachePackages }}
+      with:
+        node-version: ${{ inputs.nodeVersion }}
         cache: 'yarn'
+    - run: echo ${{ inputs.cachePackages }}
+      shell: bash
     - name: Cache node_modules
       id: cache-node-modules
       uses: actions/cache@v3
+      if: ${{ inputs.cachePackages }}
       with:
         path: node_modules
         key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-${{ hashFiles('**/yarn.lock') }}
@@ -20,6 +28,12 @@ runs:
             ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-
     - run: yarn install --frozen-lockfile --prefer-offline --immutable
       shell: bash
+inputs:
+  cachePackages:
+    required: true
+  nodeVersion:
+    required: false
+    default: '12'
 branding:
   icon: life-buoy
   color: orange

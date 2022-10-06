@@ -13,4 +13,4 @@ inputs:
     default: "neutral"
 outputs:
   issuesCount:
-    description: "Number of eslint violations found"
+    description: "Number of TypeScript violations found"

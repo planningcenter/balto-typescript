@@ -19,6 +19,7 @@ runs:
         restore-keys: |
             ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-
     - run: yarn install --frozen-lockfile --prefer-offline --immutable
+      shell: bash
     - uses: planningcenter/balto-typescript/action@composite
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

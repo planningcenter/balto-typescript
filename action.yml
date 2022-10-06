@@ -1,5 +1,5 @@
-name: "Balto - Eslint"
-description: "Run eslint on your repo"
+name: "Balto - TypeScript"
+description: "Run TypeScript checks on your repo"
 runs:
   using: node12
   main: main.js
@@ -7,18 +7,10 @@ branding:
   icon: life-buoy
   color: orange
 inputs:
-  extensions:
-    description: "A comma separated list of extensions to run on"
-    required: false
-    default: "js"
   conclusionLevel:
     description: 'Which check run conclusion type to use when annotations are created ("neutral" or "failure" are most common)'
     required: false
     default: "neutral"
-  failureLevel:
-    description: 'The lowest annotation level to fail on ("warning" or "error")'
-    required: false
-    default: "error"
 outputs:
   issuesCount:
     description: "Number of eslint violations found"

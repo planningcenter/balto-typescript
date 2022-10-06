@@ -18,9 +18,9 @@ runs:
       uses: actions/cache@v3
       with:
         path: node_modules
-        key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-${{ hashFiles('**/yarn.lock') }}
+        key: ${{ runner.os }}-${{ matrix.node-version }}-node-modules-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-            ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-
+            ${{ runner.os }}-${{ matrix.node-version }}-node-modules-
     - run: yarn install --frozen-lockfile --prefer-offline --immutable
       shell: bash
 inputs:

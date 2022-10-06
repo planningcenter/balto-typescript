@@ -3,23 +3,7 @@ description: "Run TypeScript checks on your repo"
 runs:
   using: composite
   steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-    - uses: actions/setup-node@v2
-      with:
-        node-version: '12'
-        cache: 'yarn'
-    - name: Cache node_modules
-      id: cache-node-modules
-      uses: actions/cache@v3
-      with:
-        path: node_modules
-        key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-            ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-
-    - run: yarn install --frozen-lockfile --prefer-offline --immutable
-      shell: bash
+    - uses: planningcenter/balto-typescript/yarn@composite
     - uses: planningcenter/balto-typescript/action@composite
       env:
         GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}

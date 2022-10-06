@@ -4,7 +4,6 @@ runs:
   using: composite
   steps:
     - uses: planningcenter/balto-typescript/yarn@composite
-      if: ${{ inputs.packageManager == 'yarn' }}
       with:
         cachePackages: ${{ inputs.cachePackages }}
     - uses: planningcenter/balto-typescript/action@composite
@@ -20,13 +19,6 @@ inputs:
     description: 'Which check run conclusion type to use when annotations are created ("neutral" or "failure" are most common)'
     required: false
     default: "neutral"
-  packageManager:
-    description: 'Which package manager do you use? ("yarn" | "npm" | "custom"). With the "custom" option, you are required to make sure to set up your environment and install packages'
-    required: true
-  cachePackages:
-    description: 'Cache the JavaScript packages to speed up the process'
-    required: false
-    default: true
 outputs:
   issuesCount:
     description: "Number of eslint violations found"

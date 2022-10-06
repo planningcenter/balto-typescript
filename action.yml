@@ -8,7 +8,7 @@ runs:
         fetch-depth: 0
     - uses: actions/setup-node@v2
       with:
-        node-version: '14'
+        node-version: '12'
         cache: 'yarn'
     - name: Cache node_modules
       id: cache-node-modules
@@ -21,8 +21,9 @@ runs:
     - run: yarn install --frozen-lockfile --prefer-offline --immutable
       shell: bash
     - uses: planningcenter/balto-typescript/action@composite
+      env:
+        GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
       with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         conclusionLevel: ${{inputs.conclusion_level}}
 branding:
   icon: life-buoy

@@ -1,16 +1,8 @@
-name: "Balto - TypeScript"
+name: "Balto - TypeScript Check"
 description: "Run TypeScript checks on your repo"
 runs:
-  using: composite
-  steps:
-    - uses: planningcenter/balto-typescript/yarn@composite
-      with:
-        cachePackages: ${{ inputs.cachePackages }}
-    - uses: planningcenter/balto-typescript/action@composite
-      env:
-        GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
-      with:
-        conclusionLevel: ${{ inputs.conclusion_level }}
+  using: node12
+  main: main.js
 branding:
   icon: life-buoy
   color: orange
@@ -21,4 +13,4 @@ inputs:
     default: "neutral"
 outputs:
   issuesCount:
-    description: "Number of eslint violations found"
+    description: "Number of TypeScript violations found"

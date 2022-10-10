@@ -12,9 +12,7 @@ const checkName = 'TypeScript'
 
 let typeScriptCommand = null
 
-async function installJSPackagesAsync () {
-  // await easyExec('yarn --prefer-offline', false)
-}
+
 
 async function setupTypescriptCommand () {
   try {
@@ -28,7 +26,6 @@ async function setupTypescriptCommand () {
 async function runTypeScriptCommand () {
   const results = await easyExec(typeScriptCommand)
   let currentErrorComplete = true
-  // console.log(results)
   const annotations = results.output.split("\n")
                                     .reduce((acc, line) => {
                                       if (line === '' || line === "\n") {
@@ -78,7 +75,6 @@ async function run () {
   let report = {}
   try {
     process.chdir(GITHUB_WORKSPACE)
-    await installJSPackagesAsync()
     await setupTypescriptCommand()
     report = await runTypeScriptCommand()
   } catch (e) {

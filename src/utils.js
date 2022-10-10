@@ -1,7 +1,7 @@
 const os = require('os')
 const exec = require('@actions/exec')
 
-exports.easyExec = async function easyExec (commandWithArgs, silent = true) {
+exports.easyExec = async function easyExec (commandWithArgs) {
   let output = ''
   let error = ''
 
@@ -14,14 +14,14 @@ exports.easyExec = async function easyExec (commandWithArgs, silent = true) {
         error += data.toString()
       },
     },
-    silent
+    silent: true
   }
 
   const commandParts = commandWithArgs.split(' ')
   const command = commandParts[0]
   const args = commandParts.slice(1)
 
-  console.log(commandWithArgs)
+  console.log(`${command} ${args.join(' ')}`)
 
   let exitCode
   try {

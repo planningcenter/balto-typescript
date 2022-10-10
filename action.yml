@@ -2,7 +2,7 @@ name: "Balto - TypeScript Check"
 description: "Run TypeScript checks on your repo"
 runs:
   using: node12
-  main: main.js
+  main: dist/index.js
 branding:
   icon: life-buoy
   color: orange

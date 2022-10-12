@@ -1,0 +1,32 @@
+name: "Setup Yarn"
+description: "Sets up JavaScript packages using Yarn"
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - uses: actions/setup-node@v2
+      with:
+        node-version: ${{ inputs.nodeVersion }}
+    - uses: actions/setup-node@v2
+      with:
+        node-version: ${{ inputs.nodeVersion }}
+        cache: 'yarn'
+    - name: Cache node_modules
+      id: cache-node-modules
+      uses: actions/cache@v3
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-${{ matrix.node-version }}-node-modules-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+            ${{ runner.os }}-${{ matrix.node-version }}-node-modules-
+    - run: yarn install --frozen-lockfile --prefer-offline --immutable
+      shell: bash
+inputs:
+  nodeVersion:
+    required: false
+    default: '12'
+branding:
+  icon: life-buoy
+  color: orange

@@ -13,6 +13,7 @@ export class TSCClient extends ClientBase {
       const [match, path, lineNumberString, message] =
         line.match(/(.*\.tsx?)[\(:](.*)[:,].*(error.*)/) || []
       if (!match) {
+        if (acc.length === 0) return acc // there could be output that isn't related - we will skip that
         const lastAnnotation = acc[acc.length - 1]
         lastAnnotation.message += `\n${line}`
         return acc

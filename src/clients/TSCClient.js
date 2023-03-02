@@ -15,6 +15,7 @@ export class TSCClient extends ClientBase {
     const firstLineWeCareAbout = this.output.findIndex((line) =>
       line.match(ERROR_REGEX)
     )
+    if (firstLineWeCareAbout === -1) return (this._annotations = [])
     const linesWeCareAbout = this.output.slice(firstLineWeCareAbout)
 
     return (this._annotations = linesWeCareAbout.reduce((acc, line) => {

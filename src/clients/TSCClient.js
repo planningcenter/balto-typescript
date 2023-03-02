@@ -21,7 +21,7 @@ export class TSCClient extends ClientBase {
       const [match, path, lineNumberString, message] =
         line.match(ERROR_REGEX) || []
       if (!match && acc.length === 0)
-        throw `something went wrong with line ${line}, ${this.output}`
+        throw `something went wrong with line ${line}, ${this.output}, ${this.output.length}, ${linesWeCareAbout.length}`
       if (!match) {
         const lastAnnotation = acc[acc.length - 1]
         lastAnnotation.message += `\n${line}`

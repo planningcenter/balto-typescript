@@ -2,6 +2,8 @@ import { ClientBase } from "./ClientBase"
 
 const { GITHUB_WORKSPACE } = process.env
 
+const ERROR_REGEX = /(.*\.tsx?)[\(:](.*)[:,].*(error.*)/
+
 export class TSCClient extends ClientBase {
   get command() {
     return `${GITHUB_WORKSPACE}/node_modules/.bin/tsc --pretty false`
@@ -9,9 +11,16 @@ export class TSCClient extends ClientBase {
 
   get annotations() {
     if (this._annotations) return this._annotations
-    return (this._annotations = this.output.reduce((acc, line) => {
+
+    const firstLineWeCareAbout = this.output.findIndex((line) =>
+      line.match(ERROR_REGEX)
+    )
+    if (firstLineWeCareAbout === -1) return (this._annotations = [])
+    const linesWeCareAbout = this.output.slice(firstLineWeCareAbout)
+
+    return (this._annotations = linesWeCareAbout.reduce((acc, line) => {
       const [match, path, lineNumberString, message] =
-        line.match(/(.*\.tsx?)[\(:](.*)[:,].*(error.*)/) || []
+        line.match(ERROR_REGEX) || []
       if (!match) {
         const lastAnnotation = acc[acc.length - 1]
         lastAnnotation.message += `\n${line}`

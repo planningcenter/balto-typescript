@@ -13800,6 +13800,7 @@ class TSCClient extends _ClientBase__WEBPACK_IMPORTED_MODULE_0__/* .ClientBase *
     const firstLineWeCareAbout = this.output.findIndex((line) =>
       line.match(ERROR_REGEX)
     )
+    if (firstLineWeCareAbout === -1) return (this._annotations = [])
     const linesWeCareAbout = this.output.slice(firstLineWeCareAbout)
 
     return (this._annotations = linesWeCareAbout.reduce((acc, line) => {

@@ -13937,7 +13937,7 @@ exports.easyExec = async function easyExec (commandWithArgs) {
 }
 
 exports.setOutput = function setOutput (key, value) {
-  process.stdout.write(`::set-output name=${key}::${value}` + os.EOL)
+  exec.exec(`echo "${key}=${value}" >> $GITHUB_OUTPUT`)
 }
 
 

@@ -16,8 +16,8 @@ jobs:
   typescript:
     runs-on: ubuntu-latest
     steps:
-      - uses: planningcenter/balto-typescript/yarn@0.1
-      - uses: planningcenter/balto-typescript@0.1
+      - uses: planningcenter/balto-typescript/yarn@v1
+      - uses: planningcenter/balto-typescript@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:

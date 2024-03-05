@@ -1,10 +1,10 @@
 import { ClientBase } from "./ClientBase"
 
-const { GITHUB_WORKSPACE } = process.env
+const { GITHUB_WORKSPACE, INPUT_TSCONFIG } = process.env
 
 export class TSCSilentClient extends ClientBase {
   get command() {
-    return `${GITHUB_WORKSPACE}/node_modules/.bin/tsc-silent -p ${GITHUB_WORKSPACE}/tsconfig.json --suppressConfig ${GITHUB_WORKSPACE}/tsc-silent.config.js --compiler ${GITHUB_WORKSPACE}/node_modules/typescript/lib/typescript.js`
+    return `${GITHUB_WORKSPACE}/node_modules/.bin/tsc-silent -p ${GITHUB_WORKSPACE}/${INPUT_TSCONFIG} --suppressConfig ${GITHUB_WORKSPACE}/tsc-silent.config.js --compiler ${GITHUB_WORKSPACE}/node_modules/typescript/lib/typescript.js`
   }
 
   get annotations() {

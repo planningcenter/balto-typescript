@@ -1,12 +1,14 @@
 import { ClientBase } from "./ClientBase"
 
-const { GITHUB_WORKSPACE } = process.env
+const { GITHUB_WORKSPACE, INPUT_TSCONFIG } = process.env
 
 const ERROR_REGEX = /(.*\.tsx?)[\(:](.*)[:,].*(error.*)/
 
 export class TSCClient extends ClientBase {
   get command() {
-    return `${GITHUB_WORKSPACE}/node_modules/.bin/tsc --pretty false`
+    return `${GITHUB_WORKSPACE}/node_modules/.bin/tsc --pretty false${
+      INPUT_TSCONFIG ? ` -p ${GITHUB_WORKSPACE}/${INPUT_TSCONFIG}` : ""
+    }`
   }
 
   get annotations() {

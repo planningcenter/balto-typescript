@@ -13785,13 +13785,15 @@ __nccwpck_require__.r(__webpack_exports__);
 /* harmony import */ var _ClientBase__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(3570);
 
 
-const { GITHUB_WORKSPACE } = process.env
+const { GITHUB_WORKSPACE, INPUT_TSCONFIG } = process.env
 
 const ERROR_REGEX = /(.*\.tsx?)[\(:](.*)[:,].*(error.*)/
 
 class TSCClient extends _ClientBase__WEBPACK_IMPORTED_MODULE_0__/* .ClientBase */ .K {
   get command() {
-    return `${GITHUB_WORKSPACE}/node_modules/.bin/tsc --pretty false`
+    return `${GITHUB_WORKSPACE}/node_modules/.bin/tsc --pretty false${
+      INPUT_TSCONFIG ? ` -p ${GITHUB_WORKSPACE}/${INPUT_TSCONFIG}` : ""
+    }`
   }
 
   get annotations() {
@@ -13841,11 +13843,11 @@ __nccwpck_require__.r(__webpack_exports__);
 /* harmony import */ var _ClientBase__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(3570);
 
 
-const { GITHUB_WORKSPACE } = process.env
+const { GITHUB_WORKSPACE, INPUT_TSCONFIG } = process.env
 
 class TSCSilentClient extends _ClientBase__WEBPACK_IMPORTED_MODULE_0__/* .ClientBase */ .K {
   get command() {
-    return `${GITHUB_WORKSPACE}/node_modules/.bin/tsc-silent -p ${GITHUB_WORKSPACE}/tsconfig.json --suppressConfig ${GITHUB_WORKSPACE}/tsc-silent.config.js --compiler ${GITHUB_WORKSPACE}/node_modules/typescript/lib/typescript.js`
+    return `${GITHUB_WORKSPACE}/node_modules/.bin/tsc-silent -p ${GITHUB_WORKSPACE}/${INPUT_TSCONFIG} --suppressConfig ${GITHUB_WORKSPACE}/tsc-silent.config.js --compiler ${GITHUB_WORKSPACE}/node_modules/typescript/lib/typescript.js`
   }
 
   get annotations() {
